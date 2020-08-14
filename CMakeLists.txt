@@ -29,10 +29,10 @@ INCLUDE(CheckFunctionExists)
 INCLUDE(CheckLibraryExists)
 INCLUDE(FindPkgConfig)
 INCLUDE(CheckTypeSize)
-INCLUDE(ChassisPlugin)
+## INCLUDE(ChassisPlugin)
 INCLUDE(ChassisInstall)
 INCLUDE(CTest)
-#INCLUDE(Tar)
+## INCLUDE(Tar)
 
 ENABLE_TESTING()
 
@@ -49,29 +49,29 @@ IF (ENABLE_GCOV AND NOT WIN32 AND NOT APPLE)
 ENDIF()
 
 option(SIMPLE_PARSER "use the simple parser")
-option(NETWORK_DEBUG_TRACE_IO "if NETWORK_DEBUG_TRACE_IO is defined, the network layer will log the raw MySQL packets as log-level debug")
+## option(NETWORK_DEBUG_TRACE_IO "if NETWORK_DEBUG_TRACE_IO is defined, the network layer will log the raw MySQL packets as log-level debug")
 
-option(NETWORK_DEBUG_TRACE_EVENT "if NETWORK_DEBUG_TRACE_EVENT is defined, cetus will log the abnormal event")
+## option(NETWORK_DEBUG_TRACE_EVENT "if NETWORK_DEBUG_TRACE_EVENT is defined, cetus will log the abnormal event")
 
-option(NETWORK_DEBUG_TRACE_STATE_CHANGES "if NETWORK_DEBUG_TRACE_STATE_CHANGES is defined the state engine for the mysql protocol will log all state changes")
+## option(NETWORK_DEBUG_TRACE_STATE_CHANGES "if NETWORK_DEBUG_TRACE_STATE_CHANGES is defined the state engine for the mysql protocol will log all state changes")
 
 option(USE_GLIB_DEBUG_LOG "g_debug() is default defined to nothing, change to ON if you want to use g_debug()")
-option(WITH_OPENSSL "Compile with OpenSSL")
+## option(WITH_OPENSSL "Compile with OpenSSL")
 
-EXECUTE_PROCESS(COMMAND git describe --tags
-                TIMEOUT 5
-                OUTPUT_VARIABLE GIT_REVISION
-                OUTPUT_STRIP_TRAILING_WHITESPACE
-                )
-MESSAGE(STATUS "building from ${GIT_REVISION}")
-SET(CPACK_PACKAGE_VERSION_MAJOR "2")
-SET(CPACK_PACKAGE_VERSION_MINOR "3")
-SET(CPACK_PACKAGE_VERSION_PATCH "7")
-SET(CPACK_PACKAGE_VENDOR "MySQL")
+## EXECUTE_PROCESS(COMMAND git describe --tags
+##                 TIMEOUT 5
+##                 OUTPUT_VARIABLE GIT_REVISION
+##                 OUTPUT_STRIP_TRAILING_WHITESPACE
+##                 )
+## MESSAGE(STATUS "building from ${GIT_REVISION}")
+## SET(CPACK_PACKAGE_VERSION_MAJOR "2")
+## SET(CPACK_PACKAGE_VERSION_MINOR "3")
+## SET(CPACK_PACKAGE_VERSION_PATCH "7")
+## SET(CPACK_PACKAGE_VENDOR "MySQL")
 SET(PACKAGE_NAME cetus)
 
-## SET(CPACK_*) before the INCLUDE(CPack)
-    INCLUDE(CPack)
+# SET(CPACK_*) before the INCLUDE(CPack)
+##    INCLUDE(CPack)
 
 MESSAGE(STATUS "gthread  at libs:${GTHREAD_LIBRARY_DIRS} incl:${GTHREAD_INCLUDE_DIRS}")
 MESSAGE(STATUS "gmodule  at libs:${GMODULE_LIBRARY_DIRS} incl:${GMODULE_INCLUDE_DIRS}")
@@ -82,14 +82,17 @@ IF(NOT GLIB_DEV_BASE_DIR)
     SET(GMODULE_LIBRARY_DIRS  CACHE PATH "gmodule-2.0 library dir [see pkg-config gmodule-2.0 --libs]")
     SET(GTHREAD_INCLUDE_DIRS  CACHE PATH "gthread-2.0 include dir [see pkg-config gthread-2.0 --cflags]")
     SET(GTHREAD_LIBRARY_DIRS  CACHE PATH "gthread-2.0 library dir [see pkg-config gthread-2.0 --libs]")
+    SET(GLIB_INCLUDE_DIRS  CACHE PATH "glib-2.0 include dir [see pkg-config gthread-2.0 --libs]")
+    SET(GLIB_LIBRARY_DIRS  CACHE PATH "glib-2.0 library dir [see pkg-config gthread-2.0 --libs]")
 ENDIF(NOT GLIB_DEV_BASE_DIR)
-SET(MYSQL_INCLUDE_DIRS CACHE PATH "MySQL include dir")
-SET(MYSQL_LIBRARY_DIRS CACHE PATH "MySQL library dir")
+## SET(MYSQL_INCLUDE_DIRS CACHE PATH "MySQL include dir")
+## SET(MYSQL_LIBRARY_DIRS CACHE PATH "MySQL library dir")
 
 MESSAGE(STATUS "glib2.0  at libs:${GLIB_LIBRARY_DIRS} incl:${GLIB_INCLUDE_DIRS}")
 MESSAGE(STATUS "gthread  at libs:${GTHREAD_LIBRARY_DIRS} incl:${GTHREAD_INCLUDE_DIRS}")
 MESSAGE(STATUS "gmodule  at libs:${GMODULE_LIBRARY_DIRS} incl:${GMODULE_INCLUDE_DIRS}")
 
+## 需要第三方工具pkg-config
 IF(NOT GLIB_INCLUDE_DIRS) 
     SET(__pkg_config_checked_GLIB 0)
     PKG_CHECK_MODULES(GLIB REQUIRED glib-2.0>=2.28)
@@ -105,35 +108,42 @@ IF(NOT GTHREAD_INCLUDE_DIRS)
     PKG_CHECK_MODULES(GTHREAD REQUIRED gthread-2.0>=2.28)
 ENDIF(NOT GTHREAD_INCLUDE_DIRS) 
 
-MACRO(_mysql_config VAR _regex _opt)
-    EXECUTE_PROCESS(COMMAND ${MYSQL_CONFIG_EXECUTABLE} ${_opt}
-        OUTPUT_VARIABLE _mysql_config_output
-        )
+##
+# MACRO(_mysql_config VAR _regex _opt)
+#     EXECUTE_PROCESS(COMMAND ${MYSQL_CONFIG_EXECUTABLE} ${_opt}
+#         OUTPUT_VARIABLE _mysql_config_output
+#         )
 
-    SET(_var   ${_mysql_config_output})
-    STRING(REGEX MATCHALL "${_regex}([^ ]+)" _mysql_config_output "${_mysql_config_output}")
-    STRING(REGEX REPLACE "^[ \t]+" "" _mysql_config_output "${_mysql_config_output}")
-    STRING(REGEX REPLACE "[\r\n]$" "" _mysql_config_output "${_mysql_config_output}")
-    STRING(REGEX REPLACE "${_regex}" "" _mysql_config_output "${_mysql_config_output}")
-    SEPARATE_ARGUMENTS(_mysql_config_output)
-    SET(${VAR} ${_mysql_config_output})
-ENDMACRO(_mysql_config _regex _opt)
+#     SET(_var   ${_mysql_config_output})
+#     STRING(REGEX MATCHALL "${_regex}([^ ]+)" _mysql_config_output "${_mysql_config_output}")
+#     STRING(REGEX REPLACE "^[ \t]+" "" _mysql_config_output "${_mysql_config_output}")
+#     STRING(REGEX REPLACE "[\r\n]$" "" _mysql_config_output "${_mysql_config_output}")
+#     STRING(REGEX REPLACE "${_regex}" "" _mysql_config_output "${_mysql_config_output}")
+#     SEPARATE_ARGUMENTS(_mysql_config_output)
+#     SET(${VAR} ${_mysql_config_output})
+# ENDMACRO(_mysql_config _regex _opt)
 
-IF(NOT MYSQL_INCLUDE_DIRS)
-    FIND_PROGRAM(MYSQL_CONFIG_EXECUTABLE NAMES mysql_config DOC "full path of mysql_config")
-    IF(NOT MYSQL_CONFIG_EXECUTABLE)
-        MESSAGE(SEND_ERROR "mysql_config wasn't found, -DMYSQL_CONFIG_EXECUTABLE=...")
-    ENDIF(NOT MYSQL_CONFIG_EXECUTABLE)
+# IF(NOT MYSQL_INCLUDE_DIRS)
+#     FIND_PROGRAM(MYSQL_CONFIG_EXECUTABLE NAMES mysql_config DOC "full path of mysql_config")
+#     IF(NOT MYSQL_CONFIG_EXECUTABLE)
+#         MESSAGE(SEND_ERROR "mysql_config wasn't found, -DMYSQL_CONFIG_EXECUTABLE=...")
+#     ENDIF(NOT MYSQL_CONFIG_EXECUTABLE)
 
-    _MYSQL_CONFIG(MYSQL_INCLUDE_DIRS "(^| )-I" "--include")
-    _MYSQL_CONFIG(MYSQL_LIBRARIES    "(^| )-l" "--libs")
-    _MYSQL_CONFIG(MYSQL_LIBRARY_DIRS "(^| )-L" "--libs")
-ELSE(NOT MYSQL_INCLUDE_DIRS)
-    SET(MYSQL_LIBRARIES libmysql)
-ENDIF(NOT MYSQL_INCLUDE_DIRS) 
+#     _MYSQL_CONFIG(MYSQL_INCLUDE_DIRS "(^| )-I" "--include")
+#     _MYSQL_CONFIG(MYSQL_LIBRARIES    "(^| )-l" "--libs")
+#     _MYSQL_CONFIG(MYSQL_LIBRARY_DIRS "(^| )-L" "--libs")
+# ELSE(NOT MYSQL_INCLUDE_DIRS)
+#     SET(MYSQL_LIBRARIES libmysql)
+# ENDIF(NOT MYSQL_INCLUDE_DIRS) 
+
+# SET(CMAKE_REQUIRED_INCLUDES 
+#     ${MYSQL_INCLUDE_DIRS}
+#     ${GLIB_INCLUDE_DIRS}
+#     ${GTHREAD_INCLUDE_DIRS}
+# )
+##
 
 SET(CMAKE_REQUIRED_INCLUDES 
-    ${MYSQL_INCLUDE_DIRS}
     ${GLIB_INCLUDE_DIRS}
     ${GTHREAD_INCLUDE_DIRS}
 )
@@ -185,23 +195,25 @@ CHECK_LIBRARY_EXISTS(tcmalloc malloc "" HAVE_TCMALLOC)
 # fails for some reason use check_library_exists instead and hope it's better
 #CHECK_FUNCTION_EXISTS(g_thread_init HAVE_GTHREAD)
 #SET(CMAKE_REQUIRED_LIBRARIES ${OLD_CMAKE_REQUIRED_LIBRARIES})
-if (WITH_OPENSSL)
-  find_package(OpenSSL QUIET)
-  if (OPENSSL_FOUND)
-    message("-- OpenSSL version: ${OPENSSL_VERSION}")
-    set(HAVE_OPENSSL 1)
-  else(OPENSSL_FOUND)
-    message("-- OpenSSL not found")
-    set(OPENSSL_LIBRARIES "")
-  endif(OPENSSL_FOUND)
-endif(WITH_OPENSSL)
 
-find_package(ZLIB REQUIRED)
-if (ZLIB_FOUND)
-  message("-- ZLIB version: ${ZLIB_VERSION_STRING}")
-else(ZLIB_FOUND)
-  message("-- ZLIB not found")
-endif(ZLIB_FOUND)
+##
+# if (WITH_OPENSSL)
+#   find_package(OpenSSL QUIET)
+#   if (OPENSSL_FOUND)
+#     message("-- OpenSSL version: ${OPENSSL_VERSION}")
+#     set(HAVE_OPENSSL 1)
+#   else(OPENSSL_FOUND)
+#     message("-- OpenSSL not found")
+#     set(OPENSSL_LIBRARIES "")
+#   endif(OPENSSL_FOUND)
+# endif(WITH_OPENSSL)
+
+# find_package(ZLIB REQUIRED)
+# if (ZLIB_FOUND)
+#   message("-- ZLIB version: ${ZLIB_VERSION_STRING}")
+# else(ZLIB_FOUND)
+#   message("-- ZLIB not found")
+# endif(ZLIB_FOUND)
 
 IF(${HAVE_SYS_TYPES_H})
     SET(CMAKE_EXTRA_INCLUDE_FILES sys/types.h)
@@ -222,13 +234,14 @@ IF(${HAVE_SYS_RESOURCE_H})
     SET(CMAKE_EXTRA_INCLUDE_FILES )
 ENDIF(${HAVE_SYS_RESOURCE_H})
 
-SET(OLD_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
-MESSAGE(STATUS "CMAKE_REQUIRED_LIBRARIES is ${CMAKE_REQUIRED_LIBRARIES}")
-SET(CMAKE_REQUIRED_LIBRARIES ${OLD_CMAKE_REQUIRED_LIBRARIES})
+##
+# SET(OLD_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
+# MESSAGE(STATUS "CMAKE_REQUIRED_LIBRARIES is ${CMAKE_REQUIRED_LIBRARIES}")
+# SET(CMAKE_REQUIRED_LIBRARIES ${OLD_CMAKE_REQUIRED_LIBRARIES})
 
-IF(GIT_REVISION)
-  ADD_DEFINITIONS(-DCHASSIS_BUILD_TAG="${GIT_REVISION}")
-ENDIF(GIT_REVISION)
+# IF(GIT_REVISION)
+#   ADD_DEFINITIONS(-DCHASSIS_BUILD_TAG="${GIT_REVISION}")
+# ENDIF(GIT_REVISION)
 
 CONFIGURE_FILE(config.h.cmake config.h)
 ADD_DEFINITIONS(-DHAVE_CONFIG_H)
@@ -246,5 +259,5 @@ ADD_DEFINITIONS(
 
 ADD_SUBDIRECTORY(lib)
 
-CONFIGURE_FILE(mysql-chassis.pc.cmake mysql-chassis.pc @ONLY)
-CONFIGURE_FILE(cetus.pc.cmake cetus.pc @ONLY)
+## CONFIGURE_FILE(mysql-chassis.pc.cmake mysql-chassis.pc @ONLY)
+## CONFIGURE_FILE(cetus.pc.cmake cetus.pc @ONLY)
